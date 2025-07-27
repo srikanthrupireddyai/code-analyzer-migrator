@@ -403,8 +403,8 @@ class KnowledgeExtractor:
 
             # Create the prompt template with proper LangChain message format
             prompt = ChatPromptTemplate.from_messages([
-                ("system", "You are an expert software architect analyzing Java code."),
-                ("user", """
+                {"role": "system", "content": "You are an expert software architect analyzing Java code."},
+                {"role": "user", "content": """
                 Analyze the following Java class code to provide a concise description of its purpose and functionality.
                 
                 Class Information:
@@ -429,7 +429,7 @@ class KnowledgeExtractor:
                     "responsibilities": ["List of key responsibilities"],
                     "relationships": ["Important relationships with other classes"]
                 }}
-                """)
+                """}
             ])
 
             # Prepare the variables for the template
@@ -614,21 +614,22 @@ class KnowledgeExtractor:
             body_lines = method_context.get('body', '').split('\n')
             formatted_body = '\n'.join([f"    {line}" for line in body_lines if line.strip()])
             
+            # Create the prompt template with proper LangChain message format
             prompt = ChatPromptTemplate.from_messages([
-                ("system", "You are an expert Java developer analyzing a method's purpose, complexity, and usage."),
-                ("user", f"""Analyze the following method and provide a detailed analysis:
+                {"role": "system", "content": "You are an expert Java developer analyzing a method's purpose, complexity, and usage."},
+                {"role": "user", "content": """Analyze the following method and provide a detailed analysis:
                 
                 Method Details:
-                Class: {method_context.get('class_name', '')}
-                Package: {method_context.get('package', '')}
-                Method Name: {method_context.get('method_name', '')}
-                Signature: {method_context.get('signature', '')}
-                Return Type: {method_context.get('return_type', 'void')}
-                Parameters: {formatted_params}
-                Annotations: {formatted_annotations}
+                Class: {class_name}
+                Package: {package}
+                Method Name: {method_name}
+                Signature: {signature}
+                Return Type: {return_type}
+                Parameters: {parameters}
+                Annotations: {annotations}
                 
                 Method Body:
-                {formatted_body}
+                {body}
                 
                 Please provide a JSON response with the following structure:
                 {{
@@ -638,16 +639,31 @@ class KnowledgeExtractor:
                     "usage": "How to use this method and when to call it",
                     "exceptions": ["List of potential exceptions that can be thrown"]
                 }}
-                """)
+                """}
             ])
+            
+            # Prepare the variables for the template
+            variables = {
+                "class_name": method_context.get('class_name', ''),
+                "package": method_context.get('package', ''),
+                "method_name": method_context.get('method_name', ''),
+                "signature": method_context.get('signature', ''),
+                "return_type": method_context.get('return_type', 'void'),
+                "parameters": formatted_params,
+                "annotations": formatted_annotations,
+                "body": formatted_body
+            }
+
+            logger.info(f"Prompt: {prompt.messages}")
             
             # Try multiple times with different prompts if needed
             for attempt in range(1, self.max_retries + 1):
                 try:
                     logger.info(f"\n=== Attempt {attempt}/{self.max_retries} for method {method_name} ===")
-                    logger.debug(f"Prompt: {prompt.messages[1][1]}")  # Log the actual prompt being sent
+                    logger.info(f"Prompt: {prompt.messages}")  # Log the actual prompt being sent
+                    logger.debug(f"Variables being passed: {variables}")
                     
-                    response_data = (prompt | self.llm).invoke({})
+                    response_data = (prompt | self.llm).invoke(variables)
                     if response_data:
                         logger.debug(f"LLM Response Type: {type(response_data)}")
                         if hasattr(response_data, 'content'):
