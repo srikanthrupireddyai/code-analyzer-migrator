@@ -7,6 +7,8 @@ from enum import Enum
 from datetime import datetime, timedelta
 import threading
 import hashlib
+import re
+import pickle
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
@@ -404,8 +406,7 @@ class KnowledgeExtractor:
             # Create the prompt template with proper LangChain message format
             prompt = ChatPromptTemplate.from_messages([
                 {"role": "system", "content": "You are an expert software architect analyzing Java code."},
-                {"role": "user", "content": """
-                Analyze the following Java class code to provide a concise description of its purpose and functionality.
+                {"role": "user", "content": """Analyze the following Java class code to provide a concise description of its purpose and functionality.
                 
                 Class Information:
                 Name: {class_name}
@@ -418,16 +419,10 @@ class KnowledgeExtractor:
                 {signature}
                 {body}
                 
-                Please provide:
-                1. A concise summary of the class's purpose
-                2. Key responsibilities and functionality
-                3. Important relationships with other classes
-                
-                Format the response as a JSON object with these fields:
+                Please provide a description of the class's purpose and functionality in a concise paragraph.
+                Format the response as a JSON object with this structure:
                 {{
-                    "purpose": "A concise summary of the class's purpose",
-                    "responsibilities": ["List of key responsibilities"],
-                    "relationships": ["Important relationships with other classes"]
+                    "description": "A concise paragraph describing the class's purpose and functionality"
                 }}
                 """}
             ])
@@ -470,111 +465,307 @@ class KnowledgeExtractor:
             logger.error(f"Failed to extract description for class {class_context.get('class_name', 'unknown')}: {e}")
             return None
 
-    def extract_all_knowledge(self, parsed_java_data: list[dict], parsed_pom_data: dict | None) -> dict:
+    def _extract_method_data(self, method_context: dict) -> Optional[dict]:
+        """
+        Extract a description of a method using the LLM.
+        
+        Args:
+            method_context: Dictionary containing method context including name, signature, and parameters
+            
+        Returns:
+            Dictionary containing extracted method description or None if extraction failed
+        """
+        try:
+            # Basic input validation
+            if not method_context:
+                raise ValueError(ERROR_MESSAGES['missing_input'])
+                
+            method_name = method_context.get('method_name')
+            if not method_name:
+                raise ValueError(ERROR_MESSAGES['missing_method_name'])
+                
+            # Prepare method context data for the prompt
+            method_context_data = {
+                "method_name": method_name,
+                "package": method_context.get('package', ''),
+                "signature": method_context.get('signature', ''),
+                "parameters": method_context.get('parameters', []),
+                "annotations": method_context.get('annotations', []),
+                "class_name": method_context.get('class_name', '')
+            }
+            
+            logger.info(f"Method context data: {method_context_data}")
+
+            # Create the prompt template with proper LangChain message format
+            prompt = ChatPromptTemplate.from_messages([
+                {"role": "system", "content": "You are an expert software architect analyzing Java code."},
+                {"role": "user", "content": """Analyze the following Java method to provide a concise description of its purpose and functionality.
+                
+                Method Information:
+                Name: {method_name}
+                Package: {package}
+                Class: {class_name}
+                
+                Signature:
+                {signature}
+                
+                Parameters:
+                {parameters}
+                
+                Annotations:
+                {annotations}
+                
+                Please provide a description of the method's purpose and functionality in a concise paragraph.
+                Format the response as a JSON object with this structure:
+                {{
+                    "purpose": "A concise paragraph describing the method's purpose and functionality",
+                    "parameters": [
+                        {{
+                            "name": "parameter_name",
+                            "type": "parameter_type",
+                            "description": "parameter_description"
+                        }}
+                    ]
+                }}
+                """}
+            ])
+
+            # Prepare the variables for the template
+            variables = method_context_data
+
+            logger.info(f"Method description prompt variables: {variables}")
+
+            # Create and invoke the chain
+            chain = prompt | self.llm
+            response = chain.invoke(variables)
+            
+            if response:
+                # Extract the content from the response
+                if hasattr(response, 'content'):
+                    content = response.content
+                    # Clean up the content by removing any extra quotes or formatting
+                    content = content.strip().strip('"').strip()
+                    try:
+                        # Parse the JSON response
+                        description_data = json.loads(content)
+                        return {
+                            "method_name": method_name,
+                            "package": method_context.get('package', ''),
+                            "signature": method_context.get('signature', ''),
+                            "description": description_data.get('purpose', ''),
+                            "parameters": description_data.get('parameters', [])
+                        }
+                    except json.JSONDecodeError as e:
+                        logger.error(f"Failed to parse JSON response for method {method_name}: {e}")
+                        return None
+                else:
+                    logger.error(f"Unexpected response type for method {method_name}: {type(response)}")
+                    return None
+            else:
+                logger.error(f"Failed to get response for method {method_name}")
+                return None
+        except Exception as e:
+            logger.error(f"Failed to extract description for method {method_context.get('method_name', 'unknown')}: {e}")
+            return None
+
+    def extract_all_knowledge(self, parsed_java_data: list[dict], parsed_pom_data: dict | None, output_file: str = "final_extracted_knowledge.json") -> dict:
         """
         Extract all knowledge from parsed Java data and pom.xml using LLM.
         
         Args:
             parsed_java_data: List of dictionaries containing parsed Java file data
             parsed_pom_data: Dictionary containing parsed pom.xml data
+            output_file: Path to the output JSON file where incremental results will be saved
             
         Returns:
             Dictionary containing extracted knowledge about the project
         """
         try:
-            final_extracted_data = {
-                "project_purpose": "",
-                "modules": []
-            }
+            # Initialize final data structure
+            if not os.path.exists(output_file):
+                final_extracted_data = {
+                    "projectOverview": "",
+                    "modules": []
+                }
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    json.dump(final_extracted_data, f, indent=2, ensure_ascii=False)
+            else:
+                with open(output_file, 'r', encoding='utf-8') as f:
+                    final_extracted_data = json.load(f)
             
             # Extract project purpose from pom.xml
             if parsed_pom_data:
-                final_extracted_data["project_purpose"] = self._extract_project_purpose(parsed_java_data, parsed_pom_data)
+                final_extracted_data["projectOverview"] = self._extract_project_purpose(parsed_java_data, parsed_pom_data)
             
             # Process each Java file
             for file_data in parsed_java_data:
-                # Find FilmService class
-                if file_data.get('class_name') == 'FilmService':
-                    film_service_class = file_data
-                    logger.info("Found FilmService class")
+                class_name = file_data.get('class_name')
+                if not class_name:
+                    logger.warning(f"Skipping file with no class name: {file_data}")
+                    continue
                     
-                    # Extract class description
-                    class_description = self._extract_class_description(film_service_class)
-                    if class_description:
-                        logger.info("Successfully extracted FilmService class description")
-                        
-                        # Extract getAllFilms method specifically
-                        methods = film_service_class.get('methods', [])
-                        get_all_films_method = None
-                        for method in methods:
-                            if method.get('name') == 'getAllFilms':
-                                get_all_films_method = method
-                                break
-                        
-                        if get_all_films_method:
-                            logger.info("Found getAllFilms method")
+                logger.info(f"Processing class: {class_name}")
+                
+                # Extract class description
+                class_description = self._extract_class_description(file_data)
+                if class_description:
+                    logger.info(f"Successfully extracted description for class {class_name}")
+                    
+                    # Process all methods in the class
+                    methods = file_data.get('methods', [])
+                    extracted_methods = []
+                    
+                    for method in methods:
+                        method_name = method.get('name')
+                        if not method_name:
+                            logger.warning(f"Skipping method with no name in class {class_name}")
+                            continue
                             
-                            # Prepare method context
-                            method_context = {
-                                "class_name": film_service_class["class_name"],
-                                "package": film_service_class.get("package_name", ""),
-                                "method_name": get_all_films_method["name"],
-                                "signature": get_all_films_method["signature"],
-                                "annotations": get_all_films_method.get("method_annotations", []),
-                                "parameters": get_all_films_method.get("parameters", []),
-                                "return_type": get_all_films_method.get("return_type", "void"),
-                                "body": get_all_films_method.get("method_body_raw_code", "")
-                            }
-                            
-                            # Extract method details
-                            method_data = self._extract_method_data(method_context, film_service_class)
-                            if method_data:
-                                logger.info("Successfully extracted getAllFilms method")
-                                final_extracted_data["modules"].append({
-                                    "class_name": film_service_class["class_name"],
-                                    "package": film_service_class.get("package_name", ""),
-                                    "purpose": class_description.get("purpose", ""),
-                                    "responsibilities": class_description.get("responsibilities", []),
-                                    "relationships": class_description.get("relationships", []),
-                                    "methods": [method_data]
-                                })
-                            else:
-                                logger.warning("Failed to extract getAllFilms method")
-                                final_extracted_data["modules"].append({
-                                    "class_name": film_service_class["class_name"],
-                                    "package": film_service_class.get("package_name", ""),
-                                    "purpose": class_description.get("purpose", ""),
-                                    "responsibilities": class_description.get("responsibilities", []),
-                                    "relationships": class_description.get("relationships", []),
-                                    "methods": []
-                                })
-                        else:
-                            logger.warning("getAllFilms method not found")
-                            final_extracted_data["modules"].append({
-                                "class_name": film_service_class["class_name"],
-                                "package": film_service_class.get("package_name", ""),
-                                "purpose": class_description.get("purpose", ""),
-                                "responsibilities": class_description.get("responsibilities", []),
-                                "relationships": class_description.get("relationships", []),
-                                "methods": []
-                            })
-                        break  # Break after processing the FilmService class
-                    else:
-                        logger.error(f"Failed to extract description for FilmService class: {file_data.get('class_name')}")
-                        final_extracted_data["modules"].append({
-                            "class_name": file_data.get("class_name", ""),
+                        logger.info(f"Processing method: {method_name} in class {class_name}")
+                        
+                        # Prepare method context
+                        method_context = {
+                            "class_name": class_name,
                             "package": file_data.get("package_name", ""),
-                            "purpose": "Failed to extract description",
-                            "responsibilities": [],
-                            "relationships": [],
+                            "method_name": method_name,
+                            "signature": method.get("signature", ""),
+                            "annotations": method.get("method_annotations", []),
+                            "parameters": method.get("parameters", []),
+                            "methods": extracted_methods
+                        }
+                        
+                        # Extract method data
+                        method_data = self._extract_method_data(method_context, file_data)
+                        if method_data:
+                            extracted_methods.append(method_data)
+                            logger.info(f"Successfully extracted data for method {method_name} in class {class_name}")
+                        else:
+                            logger.warning(f"Failed to extract data for method {method_name} in class {class_name}")
+                            
+                    # Add class to modules list
+                    final_extracted_data["modules"].append({
+                        "name": class_name,
+                        "description": class_description.get("purpose", ""),
+                        "methods": extracted_methods
+                    })
+                    logger.info(f"Added class {class_name} to modules list with {len(extracted_methods)} methods")
+                    
+                    # Save current state to file
+                    try:
+                        # Use a temporary file for atomic write
+                        temp_file = f"{output_file}.tmp"
+                        with open(temp_file, 'w', encoding='utf-8') as temp_f:
+                            json.dump(final_extracted_data, temp_f, indent=2, ensure_ascii=False)
+                        
+                        # Verify the contents of the temporary file
+                        try:
+                            with open(temp_file, 'r', encoding='utf-8') as verify_f:
+                                temp_file_contents = json.load(verify_f)
+                                logger.info(f"Temporary file contents verified: {json.dumps(temp_file_contents, indent=2)}")
+                        except Exception as e:
+                            logger.error(f"Failed to verify temporary file contents: {e}")
+                        
+                        # Replace the original file with the temporary file
+                        os.replace(temp_file, output_file)
+                        logger.info(f"Successfully saved incremental update for class {class_name} to {output_file}")
+                        logger.info(f"Final data structure: {json.dumps(final_extracted_data, indent=2)}")
+                    except Exception as e:
+                        logger.error(f"Failed to save incremental update for class {class_name}: {e}")
+                        logger.debug(f"Data being saved: {json.dumps(final_extracted_data, indent=2)}")
+                        raise
+                else:
+                    logger.error(f"Failed to extract description for class {class_name}")
+                    # Add class to final data and save incrementally
+                    # First check if this class already exists in modules
+                    existing_class = next((module for module in final_extracted_data["modules"] if module["name"] == class_name), None)
+                    
+                    if existing_class:
+                        # If class exists, update its data
+                        existing_class["description"] = "Failed to extract description"
+                        existing_class["methods"] = []
+                        logger.info(f"Updated existing class {class_name} in modules list")
+                    else:
+                        # If class doesn't exist, append it
+                        final_extracted_data["modules"].append({
+                            "name": class_name,
+                            "description": "Failed to extract description",
                             "methods": []
                         })
+                        logger.info(f"Added new class {class_name} to modules list")
+                    
+                    # Save current state to file
+                    try:
+                        # Use a temporary file for atomic write
+                        temp_file = f"{output_file}.tmp"
+                        with open(temp_file, 'w', encoding='utf-8') as f:
+                            json.dump(final_extracted_data, f, indent=2, ensure_ascii=False)
+                        # Replace the original file with the temporary file
+                        os.replace(temp_file, output_file)
+                        logger.info(f"Successfully saved incremental update (failed) for class {class_name} to {output_file}")
+                        logger.debug(f"Final data structure: {json.dumps(final_extracted_data, indent=2)}")
+                    except Exception as e:
+                        logger.error(f"Failed to save incremental update (failed) for class {class_name}: {e}")
+                        logger.debug(f"Data being saved: {json.dumps(final_extracted_data, indent=2)}")
+                        raise
+            
+            # Clean up any temporary files
+            try:
+                temp_file = f"{output_file}.tmp"
+                if os.path.exists(temp_file):
+                    os.remove(temp_file)
+                    logger.info(f"Removed temporary file: {temp_file}")
+            except Exception as cleanup_error:
+                logger.error(f"Failed to clean up temporary file: {cleanup_error}")
             
             return final_extracted_data
             
         except Exception as e:
             logger.error(f"Error in extract_all_knowledge: {e}")
             raise
+
+    def _extract_first_json(self, text: str) -> Optional[dict]:
+        """
+        Extract the first valid JSON object from a mixed text response.
+        Handles cases where JSON is embedded in text, in code blocks, or with extra characters.
+        
+        Args:
+            text: The mixed text containing JSON
+            
+        Returns:
+            The first valid JSON object found, or None if no valid JSON is found
+        """
+        try:
+            # Try to find JSON-like patterns and extract them
+            json_patterns = [
+                r'```json(.*?)```',  # JSON in code blocks
+                r'({.*?})',          # JSON object
+                r'\[(.*?)\]'       # JSON array
+            ]
+            
+            # Try each pattern
+            for pattern in json_patterns:
+                matches = re.finditer(pattern, text, re.DOTALL)
+                for match in matches:
+                    try:
+                        # Clean up the match
+                        content = match.group(1).strip()
+                        # Remove any extra quotes or backticks
+                        content = content.strip('`"\'')
+                        # Try to parse as JSON
+                        return json.loads(content)
+                    except json.JSONDecodeError:
+                        continue
+            
+            # If no JSON found in patterns, try parsing the whole text
+            try:
+                return json.loads(text.strip())
+            except json.JSONDecodeError:
+                pass
+                
+            return None
+        except Exception as e:
+            logger.error(f"Error extracting JSON: {e}")
+            return None
 
     def _extract_method_data(self, method_context: dict, class_context: dict) -> Optional[dict]:
         """
@@ -633,11 +824,10 @@ class KnowledgeExtractor:
                 
                 Please provide a JSON response with the following structure:
                 {{
-                    "purpose": "Brief description of what the method does",
-                    "complexity": "LOW | MEDIUM | HIGH",
-                    "dependencies": ["List of other methods or classes this method depends on"],
-                    "usage": "How to use this method and when to call it",
-                    "exceptions": ["List of potential exceptions that can be thrown"]
+                    "name": "{method_name}",
+                    "signature": "{signature}",
+                    "description": "Brief description of what the method does",
+                    "complexity": "LOW | MEDIUM | HIGH"
                 }}
                 """}
             ])
@@ -670,38 +860,46 @@ class KnowledgeExtractor:
                             logger.debug(f"LLM Response Content: {response_data.content}")
                             content = response_data.content
                             try:
-                                description_data = json.loads(content)
-                                logger.debug(f"Parsed JSON: {json.dumps(description_data, indent=2)}")
+                                # Extract JSON from mixed response
+                                description_data = self._extract_first_json(content)
+                                if description_data:
+                                    logger.debug(f"Parsed JSON: {json.dumps(description_data, indent=2)}")
                                 
-                                # Save to cache if enabled
-                                if self.cache_enabled and self.cache:
-                                    with self.cache:
-                                        self.cache.save(method_name, method_context.get('body', ''), description_data)
+                                    # Map description to purpose since that's what we expect in the output
+                                    description_data['purpose'] = description_data.get('description', f"Summary for {method_name}")
                                 
-                                # Save intermediate output
-                                output_context = {
-                                    "method_name": method_name,
-                                    "class_name": method_context.get('class_name', ''),
-                                    "signature": method_context.get('signature', ''),
-                                    "raw_content": method_context.get('body', ''),
-                                    "response_data": description_data
-                                }
+                                    # Save to cache if enabled
+                                    if self.cache_enabled and self.cache:
+                                        with self.cache:
+                                            self.cache.save(method_name, method_context.get('body', ''), description_data)
                                 
-                                intermediate_output_file = f"intermediate_output_{method_name}.json"
-                                with open(intermediate_output_file, 'w', encoding='utf-8') as f:
-                                    json.dump(output_context, f, indent=2, ensure_ascii=False)
-                                    logger.info(f"Saved intermediate output to: {intermediate_output_file}")
+                                    # Save intermediate output
+                                    output_context = {
+                                        "method_name": method_name,
+                                        "class_name": method_context.get('class_name', ''),
+                                        "signature": method_context.get('signature', ''),
+                                        "raw_content": method_context.get('body', ''),
+                                        "response_data": description_data
+                                    }
                                 
-                                # Return structured response
-                                return {
-                                    "name": method_name,
-                                    "signature": method_context.get('signature', ''),
-                                    "purpose": description_data.get('purpose', f"Summary for {method_name}"),
-                                    "complexity": description_data.get('complexity', 'MEDIUM'),
-                                    "dependencies": description_data.get('dependencies', []),
-                                    "usage": description_data.get('usage', ""),
-                                    "exceptions": description_data.get('exceptions', [])
-                                }
+                                    intermediate_output_file = f"intermediate_output_{method_name}.json"
+                                    with open(intermediate_output_file, 'w', encoding='utf-8') as f:
+                                        json.dump(output_context, f, indent=2, ensure_ascii=False)
+                                        logger.info(f"Saved intermediate output to: {intermediate_output_file}")
+                                
+                                    # Return structured response
+                                    return {
+                                        "name": method_name,
+                                        "signature": method_context.get('signature', ''),
+                                        "purpose": description_data['purpose'],  # Now guaranteed to exist
+                                        "complexity": description_data.get('complexity', 'MEDIUM'),
+                                        "dependencies": description_data.get('dependencies', []),
+                                        "usage": description_data.get('usage', ""),
+                                        "exceptions": description_data.get('exceptions', [])
+                                    }
+                                else:
+                                    logger.error(f"Failed to extract JSON from response for method {method_name}")
+                                    return None
                             except json.JSONDecodeError as e:
                                 logger.error(f"JSON decode error: {e}\nResponse content: {content}")
                                 raise

@@ -14,188 +14,259 @@ mock_llm.invoke.return_value = {
     "dependencies": ["Item.getPrice", "Item.getQuantity"]
 }
 
-def test_prompt_template_handling():
-    # Test data for Order.calculateTotal method
+def test_class_description_extraction():
+    # Test data for a sample class
     class_context = {
-        "class_name": "Order",
-        "raw_content": """
-        public class Order {
-            private List<Item> items;
-            
-            public double calculateTotal(List<Item> items) {
-                double total = 0;
-                for (Item item : items) {
-                    total += item.getPrice() * item.getQuantity();
-                }
-                return total;
-            }
+        "class_name": "CustomerService",
+        "package": "com.example.service",
+        "doc": """/**
+         * Service class for managing customer operations.
+         * Handles customer creation, retrieval, and updates.
+         */""",
+        "signature": "public class CustomerService implements CustomerServiceInterface",
+        "body": """
+        private CustomerRepository customerRepo;
+        
+        public CustomerService(CustomerRepository repo) {
+            this.customerRepo = repo;
+        }
+        
+        public Customer getCustomerById(int id) {
+            return customerRepo.findById(id);
         }
         """
     }
     
-    method_info = {
-        "name": "calculateTotal",
-        "signature": "double calculateTotal(List<Item> items)",
-        "parameters": [{"name": "items", "type": "List<Item>"}],
-        "return_type": "double",
-        "annotations": [],
-        "method_body_raw_code": """
-        public double calculateTotal(List<Item> items) {
-            double total = 0;
-            for (Item item : items) {
-                total += item.getPrice() * item.getQuantity();
-            }
-            return total;
-        }
-        """
-    }
+    # Create mock LLM response
+    mock_llm_response = Mock()
+    mock_llm_response.content = json.dumps({
+        "purpose": "Service class for managing customer operations. Handles customer creation, retrieval, and updates.",
+        "responsibilities": ["Manage customer operations", "Handle customer creation", "Handle customer retrieval", "Handle customer updates"],
+        "relationships": ["CustomerRepository", "CustomerServiceInterface"]
+    })
     
-    # Create method context
+    # Create mock LLM
+    mock_llm = Mock()
+    mock_llm.invoke.return_value = mock_llm_response
+    
+    # Create KnowledgeExtractor instance with mock LLM
+    extractor = KnowledgeExtractor()
+    extractor.llm = mock_llm
+    
+    # Test class description extraction
+    result = extractor._extract_class_description(class_context)
+    
+    # Verify LLM was called with correct prompt
+    mock_llm.invoke.assert_called()
+    
+    # Verify the prompt was properly formatted
+    call_args = mock_llm.invoke.call_args[1].get('variables', {})
+    assert "class_name" in call_args
+    assert call_args["class_name"] == "CustomerService"
+    assert "package" in call_args
+    assert "doc" in call_args
+    assert "signature" in call_args
+    assert "body" in call_args
+    
+    # Verify the prompt was properly formatted
+    call_args = mock_chain.invoke.call_args[1].get('variables', {})
+    assert "class_name" in call_args
+    assert call_args["class_name"] == "CustomerService"
+    assert "package" in call_args
+    assert "doc" in call_args
+    assert "signature" in call_args
+    assert "body" in call_args
+    
+    # Verify result structure
+    assert isinstance(result, dict)
+    assert "class_name" in result
+    assert result["class_name"] == "CustomerService"
+    assert "package" in result
+    assert result["package"] == "com.example.service"
+    assert "purpose" in result
+    assert isinstance(result["purpose"], str)
+    assert len(result["purpose"]) > 0
+    assert "responsibilities" in result
+    assert isinstance(result["responsibilities"], list)
+    assert len(result["responsibilities"]) > 0
+    assert "relationships" in result
+    assert isinstance(result["relationships"], list)
+    assert len(result["relationships"]) > 0
+    
+    # Verify LLM was called with correct prompt
+    extractor.llm.invoke.assert_called()
+    
+    # Verify the prompt was properly formatted
+    call_args = extractor.llm.invoke.call_args[1].get('variables', {})
+    assert "class_name" in call_args
+    assert "package" in call_args
+    assert "doc" in call_args
+    assert "signature" in call_args
+    assert "body" in call_args
+
+def test_method_extraction():
+    # Test data for a sample method
     method_context = {
-        "class_name": class_context.get('class_name', 'N/A'),
-        "method_name": method_info.get('name'),
-        "signature": method_info.get('signature'),
-        "parameters": method_info.get('parameters', []),
-        "return_type": method_info.get('return_type'),
-        "annotations": method_info.get('annotations', []),
-        "body": method_info.get('method_body_raw_code', '')
-    }
-    
-    # Create JSON schema with proper escaping
-    schema_dict = {
-        "purpose": "A concise summary of what this method does",
-        "complexity": "Low, Medium, or High",
-        "dependencies": ["List of internal dependencies"]
-    }
-    json_schema = json.dumps(schema_dict)
-    
-    # Create user message with proper LangChain template syntax
-    user_message = """
-    Method Context:
-    ```json
-    {{ method_context }}
-    ```
-    
-    Provide JSON output following this schema:
-    {{ schema }}
-    """
-    
-    # Test the template variables
-    variables = {
-        "schema": json_schema,
-        "method_context": json.dumps(method_context, indent=2)
-    }
-    
-    # Verify the JSON schema is valid
-    try:
-        json.loads(json_schema)
-    except json.JSONDecodeError:
-        pytest.fail("JSON schema is not valid JSON")
-    
-    # Verify the method context is properly formatted
-    assert method_context["class_name"] == "Order"
-    assert method_context["method_name"] == "calculateTotal"
-    assert len(method_context["parameters"]) == 1
-    assert method_context["parameters"][0]["name"] == "items"
-    assert method_context["parameters"][0]["type"] == "List<Item>"
-    
-    # Test prompt template formatting
-    try:
-        # Create the prompt template
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are an expert Java developer analyzing method implementations."),
-            ("user", user_message)
-        ])
-        
-        # Create a mock LLM
-        mock_llm = Mock()
-        mock_llm.invoke.return_value = "Test response"
-        
-        # Create a chain and invoke it using the same pattern as KnowledgeExtractor._extract_method_data
-        chain = prompt | mock_llm
-        
-        # Mock the LLM's invoke method to return a valid JSON response
-        mock_llm.invoke.return_value = {
-            "purpose": "A concise summary of what this method does",
-            "complexity": "Low",
-            "dependencies": ["List of internal dependencies"]
+        "class_name": "CustomerService",
+        "package": "com.example.service",
+        "method_name": "getCustomerById",
+        "signature": "Customer getCustomerById(int id)",
+        "parameters": [{"name": "id", "type": "int"}],
+        "return_type": "Customer",
+        "annotations": [],
+        "body": """
+        public Customer getCustomerById(int id) {
+            return customerRepo.findById(id);
         }
+        """
+    }
+    
+    # Create KnowledgeExtractor instance with mock LLM
+    extractor = KnowledgeExtractor()
+    extractor.llm = Mock()
+    extractor.llm.invoke.return_value = {
+        "content": json.dumps({"name": "getCustomerById",
+                              "signature": "Customer getCustomerById(int id)",
+                              "description": "Retrieves customer data by ID",
+                              "complexity": "Low"})
+    }
+    
+    # Test method extraction
+    result = extractor._extract_method_data(method_context, method_context)
+    
+    # Verify LLM was called with correct prompt
+    extractor.llm.invoke.assert_called()
+    
+    # Verify result structure
+    assert isinstance(result, dict)
+    assert "name" in result
+    assert "signature" in result
+    assert "description" in result
+    assert "complexity" in result
+    assert result["name"] == "getCustomerById"
+    assert result["complexity"] in ["Low", "Medium", "High"]
+    
+    # Verify LLM was called with correct prompt
+    extractor.llm.invoke.assert_called()
+    
+    # Verify the prompt was properly formatted
+    call_args = extractor.llm.invoke.call_args[1].get('variables', {})
+    assert "class_name" in call_args
+    assert "package" in call_args
+    assert "method_name" in call_args
+    assert "signature" in call_args
+    assert "parameters" in call_args
+    assert "return_type" in call_args
+    assert "annotations" in call_args
+    assert "body" in call_args
+
+def test_extract_all_knowledge():
+    # Test data for multiple classes
+    parsed_java_data = [
+        {
+            "class_name": "CustomerService",
+            "package": "com.example.service",
+            "doc": "Service class for managing customer operations.",
+            "signature": "public class CustomerService implements CustomerServiceInterface",
+            "methods": [
+                {
+                    "name": "getCustomerById",
+                    "signature": "Customer getCustomerById(int id)",
+                    "parameters": [{"name": "id", "type": "int"}],
+                    "return_type": "Customer",
+                    "annotations": [],
+                    "method_body_raw_code": """
+                    public Customer getCustomerById(int id) {
+                        return customerRepo.findById(id);
+                    }
+                    """
+                }
+            ]
+        },
+        {
+            "class_name": "CustomerRepository",
+            "package": "com.example.repository",
+            "doc": "Repository class for customer data access.",
+            "signature": "public class CustomerRepository",
+            "methods": [
+                {
+                    "name": "findById",
+                    "signature": "Customer findById(int id)",
+                    "parameters": [{"name": "id", "type": "int"}],
+                    "return_type": "Customer",
+                    "annotations": [],
+                    "method_body_raw_code": """
+                    public Customer findById(int id) {
+                        return customers.get(id);
+                    }
+                    """
+                }
+            ]
+        }
+    ]
+    
+    # Create mock LLM that returns valid responses
+    mock_llm = Mock()
+    mock_llm.invoke.return_value = {
+        "content": json.dumps({"description": "Service class for managing customer operations. Handles customer creation, retrieval, and updates."})
+    }
+    
+    # Create KnowledgeExtractor instance with mock LLM
+    extractor = KnowledgeExtractor()
+    extractor.llm = mock_llm
+    
+    # Test extract_all_knowledge
+    result = extractor.extract_all_knowledge(parsed_java_data, None)
+    
+    # Verify LLM was called multiple times
+    assert mock_llm.invoke.call_count > 0
+    
+    # Verify result structure
+    assert isinstance(result, dict)
+    assert "projectOverview" in result
+    assert "modules" in result
+    assert isinstance(result["modules"], list)
+    
+    # Verify each module has correct structure
+    for module in result["modules"]:
+        assert "name" in module
+        assert isinstance(module["name"], str)
+        assert "description" in module
+        assert isinstance(module["description"], str)
+        assert "methods" in module
+        assert isinstance(module["methods"], list)
         
-        # First verify the template substitution works
-        formatted_message = prompt.format_messages(**variables)
-        user_content = formatted_message[1].content
-        assert "{{schema}}" not in user_content
-        assert "{{method_context}}" not in user_content
-        assert "Method Context:" in user_content
-        assert "```json" in user_content
-        assert "```" in user_content
-        assert "Provide JSON output following this schema:" in user_content
-        
-        # Verify the JSON schema structure
-        assert "purpose" in user_content
-        assert "complexity" in user_content
-        assert "dependencies" in user_content
-        assert "List of internal dependencies" in user_content
-        assert "Low, Medium, or High" in user_content
-        assert "A concise summary of what this method does" in user_content
-        
-        # Now verify the chain invocation
-        response = chain.invoke(variables)
-        
-        # Verify the prompt template was formatted correctly
-        assert len(formatted_messages) == 2  # Should be system and user messages
-        user_message = next(msg for msg in formatted_messages if msg.type == "human").content
-        assert "{{schema}}" not in user_message
-        assert "{{method_context}}" not in user_message
-        assert "Method Context:" in user_message
-        assert "```json" in user_message
-        assert "```" in user_message
-        assert "Provide JSON output following this schema:" in user_message
-        assert "purpose" in user_message
-        assert "complexity" in user_message
-        assert "dependencies" in user_message
-        assert "List of internal dependencies" in user_message
-        assert "Low, Medium, or High" in user_message
-        assert "A concise summary of what this method does" in user_message
-        assert method_context["class_name"] in user_message
-        assert method_context["method_name"] in user_message
-        assert method_context["signature"] in user_message
-        
-        # Now verify the chain invocation
-        response = chain.invoke(variables)
-        mock_llm.invoke.assert_called_once()
-        args = mock_llm.invoke.call_args[0][0]
-        assert isinstance(args, list)  # Should be a list of messages
-        assert len(args) == 2  # Should be system and user messages
-    except Exception as e:
-        pytest.fail(f"Prompt template formatting failed: {str(e)}")
+        # Verify each method has correct structure
+        for method in module["methods"]:
+            assert "name" in method
+            assert isinstance(method["name"], str)
+            assert "signature" in method
+            assert isinstance(method["signature"], str)
+            assert "description" in method
+            assert isinstance(method["description"], str)
+            assert "complexity" in method
+            assert isinstance(method["complexity"], str)
+            assert method["complexity"] in ["Low", "Medium", "High"]
+    
+    # Verify LLM was called multiple times
+    assert mock_llm.invoke.call_count > 0
+    
+    # Verify the number of LLM calls matches the number of classes and methods
+    expected_calls = len(parsed_java_data) + sum(len(cls["methods"]) for cls in parsed_java_data)
+    assert mock_llm.invoke.call_count == expected_calls
 
 def test_complex_method_handling():
-    # Test data for a more complex method
+    # Test data for a more complex method with annotations and complex logic
     class_context = {
         "class_name": "InventoryManager",
-        "raw_content": """
-        public class InventoryManager {
-            private Map<String, Integer> stock;
-            private final int MAX_STOCK = 100;
-            
-            @ThreadSafe
-            public synchronized boolean updateStock(String itemId, int quantity) {
-                if (quantity < 0) {
-                    throw new IllegalArgumentException("Quantity cannot be negative");
-                }
-                
-                int currentStock = stock.getOrDefault(itemId, 0);
-                int newStock = currentStock + quantity;
-                
-                if (newStock > MAX_STOCK) {
-                    return false;
-                }
-                
-                stock.put(itemId, newStock);
-                return true;
-            }
-        }
+        "package": "com.example.inventory",
+        "doc": """/**
+         * Manages inventory levels with thread safety.
+         */""",
+        "signature": "public class InventoryManager",
+        "body": """
+        private final Map<String, Integer> stock = new ConcurrentHashMap<>();
+        private static final int MAX_STOCK = 1000;
         """
     }
     
@@ -213,14 +284,14 @@ def test_complex_method_handling():
             if (quantity < 0) {
                 throw new IllegalArgumentException("Quantity cannot be negative");
             }
-            
+
             int currentStock = stock.getOrDefault(itemId, 0);
             int newStock = currentStock + quantity;
-            
+
             if (newStock > MAX_STOCK) {
                 return false;
             }
-            
+
             stock.put(itemId, newStock);
             return true;
         }
@@ -238,112 +309,44 @@ def test_complex_method_handling():
         "body": method_info.get('method_body_raw_code', '')
     }
     
-    # Create JSON schema with proper escaping
-    schema_dict = {
-        "purpose": "A concise summary of what this method does",
-        "complexity": "Low, Medium, or High",
-        "dependencies": ["List of internal dependencies"]
-    }
-    json_schema = json.dumps(schema_dict)
-    
-    # Create user message with proper LangChain template syntax
-    user_message = """
-    Method Context:
-    ```json
-    {{ method_context }}
-    ```
-    
-    Provide JSON output following this schema:
-    {{ schema }}
-    """
-    
-    # Test the template variables
-    variables = {
-        "schema": json_schema,
-        "method_context": json.dumps(method_context, indent=2)
+    # Create KnowledgeExtractor instance with mock LLM
+    extractor = KnowledgeExtractor()
+    extractor.llm = Mock()
+    extractor.llm.invoke.return_value = {
+        "content": json.dumps({"name": "updateStock",
+                              "signature": "boolean updateStock(String itemId, int quantity)",
+                              "description": "Updates inventory stock levels with thread safety",
+                              "complexity": "Medium"})
     }
     
-    # Verify the JSON schema is valid
-    try:
-        json.loads(json_schema)
-    except json.JSONDecodeError:
-        pytest.fail("JSON schema is not valid JSON")
+    # Test method extraction
+    result = extractor._extract_method_data(method_context, class_context)
     
-    # Verify the method context is properly formatted
-    assert method_context["class_name"] == "InventoryManager"
-    assert method_context["method_name"] == "updateStock"
-    assert len(method_context["parameters"]) == 2
+    # Verify LLM was called with correct prompt
+    extractor.llm.invoke.assert_called()
     
-    # Test prompt template formatting
-    try:
-        # Create the prompt template
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are an expert Java developer analyzing method implementations."),
-            ("user", user_message)
-        ])
-        
-        # Create a mock LLM
-        mock_llm = Mock()
-        mock_llm.invoke.return_value = "Test response"
-        
-        # Create a chain and invoke it using the same pattern as KnowledgeExtractor._extract_method_data
-        chain = prompt | mock_llm
-        
-        # Mock the LLM's invoke method to return a valid JSON response
-        mock_llm.invoke.return_value = {
-            "purpose": "A concise summary of what this method does",
-            "complexity": "Low",
-            "dependencies": ["List of internal dependencies"]
-        }
-        
-        # First verify the template substitution works
-        formatted_message = prompt.format_messages(**variables)
-        user_content = formatted_message[1].content
-        assert "{{schema}}" not in user_content
-        assert "{{method_context}}" not in user_content
-        assert "Method Context:" in user_content
-        assert "```json" in user_content
-        assert "```" in user_content
-        assert "Provide JSON output following this schema:" in user_content
-        
-        # Verify the JSON schema structure
-        assert "purpose" in user_content
-        assert "complexity" in user_content
-        assert "dependencies" in user_content
-        assert "List of internal dependencies" in user_content
-        assert "Low, Medium, or High" in user_content
-        assert "A concise summary of what this method does" in user_content
-        
-        # Now verify the chain invocation
-        response = chain.invoke(variables)
-        
-        # Verify the prompt template was formatted correctly
-        assert len(formatted_messages) == 2  # Should be system and user messages
-        user_message = next(msg for msg in formatted_messages if msg.type == "human").content
-        assert "{{schema}}" not in user_message
-        assert "{{method_context}}" not in user_message
-        assert "Method Context:" in user_message
-        assert "```json" in user_message
-        assert "```" in user_message
-        assert "Provide JSON output following this schema:" in user_message
-        assert "purpose" in user_message
-        assert "complexity" in user_message
-        assert "dependencies" in user_message
-        assert "List of internal dependencies" in user_message
-        assert "Low, Medium, or High" in user_message
-        assert "A concise summary of what this method does" in user_message
-        assert method_context["class_name"] in user_message
-        assert method_context["method_name"] in user_message
-        assert method_context["signature"] in user_message
-        
-        # Now verify the chain invocation
-        response = chain.invoke(variables)
-        mock_llm.invoke.assert_called_once()
-        args = mock_llm.invoke.call_args[0][0]
-        assert isinstance(args, list)  # Should be a list of messages
-        assert len(args) == 2  # Should be system and user messages
-    except Exception as e:
-        pytest.fail(f"Prompt template formatting failed: {str(e)}")
+    # Verify result structure
+    assert isinstance(result, dict)
+    assert "name" in result
+    assert "signature" in result
+    assert "description" in result
+    assert "complexity" in result
+    assert result["name"] == "updateStock"
+    assert result["complexity"] in ["Low", "Medium", "High"]
+    
+    # Verify LLM was called with correct prompt
+    extractor.llm.invoke.assert_called()
+    
+    # Verify the prompt was properly formatted
+    call_args = extractor.llm.invoke.call_args[1].get('variables', {})
+    assert "class_name" in call_args
+    assert "package" in call_args
+    assert "method_name" in call_args
+    assert "signature" in call_args
+    assert "parameters" in call_args
+    assert "return_type" in call_args
+    assert "annotations" in call_args
+    assert "body" in call_args
     assert method_context["parameters"][0]["name"] == "itemId"
     assert method_context["parameters"][0]["type"] == "String"
     assert method_context["parameters"][1]["name"] == "quantity"
