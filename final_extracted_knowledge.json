@@ -1,26 +1,961 @@
 {
-  "project_purpose": "This project involves the development of a website dedicated to movies. The website will likely provide information about various movies, possibly including details like cast, crew, plot summaries, ratings, and reviews. The specific functionalities and features of the website are not detailed in the provided information.",
+  "projectOverview": "Error extracting project purpose: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}",
   "modules": [
     {
-      "class_name": "FilmService",
-      "package": "com.sparta.engineering72.sakilaproject.services",
-      "purpose": "The FilmService class is designed to manage the operations related to films in the application. It provides methods for retrieving, saving, and deleting film data.",
-      "responsibilities": [
-        "Retrieving all films from the database",
-        "Retrieving a specific film by its ID",
-        "Retrieving films by their title",
-        "Retrieving available films",
-        "Counting the number of available films",
-        "Retrieving films by their category ID",
-        "Retrieving films by their actor ID",
-        "Saving a film to the database",
-        "Deleting a film from the database by its ID"
-      ],
-      "relationships": [
-        "The FilmService class interacts with the Film class, as it retrieves, saves, and deletes instances of this class.",
-        "It may also interact with classes representing the database or other data sources, as it retrieves and modifies data."
-      ],
+      "name": "MavenWrapperDownloader",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "MockTests",
+      "description": "",
+      "methods": [
+        {
+          "name": "init",
+          "signature": "void init()",
+          "description": "This method is executed before each test, typically used to set up the test environment or initialize variables.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testActorById",
+          "signature": "void testActorById()",
+          "description": "This method is a test method, as indicated by the 'Test' annotation. It is part of the 'MockTests' class in the 'com.sparta.engineering72.sakilaproject' package. The method name suggests that it is used to test the functionality of retrieving an actor by their ID in the system. However, without the method body, it's hard to provide a detailed description of what exactly the method does. It doesn't take any parameters and doesn't return any value.",
+          "complexity": "LOW"
+        },
+        {
+          "name": "testActorByFirstName",
+          "signature": "void testActorByFirstName()",
+          "description": "This method is a test method, as indicated by the 'Test' annotation. It is likely part of a suite of unit tests, specifically testing the functionality related to retrieving or interacting with an 'Actor' object by their first name within the 'MockTests' class. However, without the actual method body, it's impossible to provide a detailed description of what exactly this method is testing or how it's doing it.",
+          "complexity": "LOW"
+        },
+        {
+          "name": "testActorByLastName",
+          "signature": "void testActorByLastName()",
+          "description": "This method is likely a unit test method, used to test the functionality of retrieving an Actor by their last name in the system. It doesn't return any value and doesn't take any parameters. It's part of the 'MockTests' class in the 'com.sparta.engineering72.sakilaproject' package. The '@Test' annotation indicates that it's a test method in a JUnit testing framework.",
+          "complexity": "LOW"
+        },
+        {
+          "name": "testActorByMore",
+          "signature": "void testActorByMore()",
+          "description": "This is a test method, likely part of a suite of unit tests. It appears to test the functionality of retrieving or manipulating 'Actor' data, possibly checking if the function can handle more than a certain number of 'Actor' objects. Without the actual method body, it's impossible to provide a more detailed description.",
+          "complexity": "MEDIUM"
+        },
+        {
+          "name": "testActorByFullName",
+          "signature": "void testActorByFullName()",
+          "description": "A unit test method that tests whether an actor can be retrieved by their full name from a database or a similar data source.",
+          "complexity": "LOW"
+        },
+        {
+          "name": "testFilmByID",
+          "signature": "void testFilmByID()",
+          "description": "This method is a test method, as indicated by the 'Test' annotation. It is likely part of a suite of unit tests, specifically testing the functionality related to retrieving a film by its ID in the 'MockTests' class. However, without the actual body of the method, it's impossible to provide a detailed description of what exactly the method does or tests for.",
+          "complexity": "LOW"
+        },
+        {
+          "name": "testFilmByDescritption",
+          "signature": "void testFilmByDescritption()",
+          "description": "This method is likely a unit test method that tests the functionality of retrieving or searching films by their descriptions. It does not return any value and does not take any parameters. The '@Test' annotation indicates that it is a test method in a JUnit testing framework.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testFilmByRating",
+          "signature": "void testFilmByRating()",
+          "description": "This method is a test method, likely used to test the functionality of another method that retrieves films by their rating. Without the method body, a detailed description cannot be provided.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testFilmByLength",
+          "signature": "void testFilmByLength()",
+          "description": "This method is a test method, likely used for unit testing. It seems to test whether a film's length is correctly retrieved or handled in the application. However, without the method body, it's impossible to provide a detailed description of what exactly the method does.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testFilmByName",
+          "signature": "void testFilmByName()",
+          "description": "This method is a test method used to verify the functionality of retrieving a film by its name. It does not take any parameters and does not return any value.",
+          "complexity": "LOW"
+        },
+        {
+          "name": "testFilmByDescription",
+          "signature": "void testFilmByDescription()",
+          "description": "This method is a test method, as indicated by the 'Test' annotation. It is part of the 'MockTests' class in the 'com.sparta.engineering72.sakilaproject' package. The method name suggests that it tests the functionality related to retrieving or handling films by their descriptions. However, without the method body, it's impossible to provide a detailed description of what exactly the method does or tests. It does not take any parameters and does not return any value.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testFilms",
+          "signature": "void testFilms()",
+          "description": "This method is a test method in the MockTests class. It is used to test the functionality of the 'Films' component of the application. The method does not accept any parameters and does not return any value. The '@Test' annotation indicates that this method is a test method in a test framework such as JUnit. The exact functionality of the method cannot be determined without the method body.",
+          "complexity": "LOW"
+        },
+        {
+          "name": "testCategoryById",
+          "signature": "void testCategoryById()",
+          "description": "This method is a test method, likely used to test the functionality of retrieving a category by its ID in the system. However, without the actual body of the method, it's impossible to provide a detailed description of what the method does.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testCategoryByName",
+          "signature": "void testCategoryByName()",
+          "description": "This method is a test method, used to verify the functionality of the 'CategoryByName' feature of the software. It does not take any parameters and does not return any value. It is likely to be using some form of assertion to check the expected and actual results of the 'CategoryByName' feature. The '@Test' annotation indicates that it is a part of a test suite, likely using a framework like JUnit.",
+          "complexity": "LOW"
+        },
+        {
+          "name": "testCustomerById",
+          "signature": "void testCustomerById()",
+          "description": "This method appears to be a test method, likely used in a unit testing context. The name suggests that it tests some functionality related to retrieving or interacting with a 'Customer' object by its ID. However, without the method body, it's impossible to provide a detailed description of what the method does.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testCustomer",
+          "signature": "void testCustomer()",
+          "description": "This method is a unit test that tests some functionality related to 'Customer'. The exact functionality tested cannot be determined without the method body.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testStaff",
+          "signature": "void testStaff()",
+          "description": "This method is a unit test for the 'Staff' functionality. It likely tests various aspects of the 'Staff' class or related classes within the 'com.sparta.engineering72.sakilaproject' package. The exact operations performed by this method are unknown without the method body.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testFilmController",
+          "signature": "void testFilmController()",
+          "description": "This method is a test method used to verify the functionality of the FilmController. It does not take any parameters and does not return any value. The method is likely to contain assertions to check the expected and actual results of the FilmController methods.",
+          "complexity": "LOW"
+        },
+        {
+          "name": "testFilmController2",
+          "signature": "void testFilmController2()",
+          "description": "This method is a test method in the MockTests class. It is used to test the functionality of the FilmController class. The exact functionality tested by this method cannot be determined without the method body.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testCategory",
+          "signature": "void testCategory()",
+          "description": "This method is a unit test, as indicated by the @Test annotation. The exact functionality cannot be determined without the method body.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testCategory2",
+          "signature": "void testCategory2()",
+          "description": "This method is a test method, used to test some functionality related to a 'Category2' in the system. It does not return any value and does not take any parameters. The exact functionality being tested is unknown without more context or the method body.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testActorController1",
+          "signature": "void testActorController1()",
+          "description": "This method is a unit test for the ActorController class. It tests a specific functionality of the ActorController.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testCustomerController",
+          "signature": "void testCustomerController()",
+          "description": "This method is a test method, likely designed to test the functionality of the CustomerController class. It does not return any value and does not take any parameters. The exact functionality of this method cannot be determined without the method body.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testCustomerController2",
+          "signature": "void testCustomerController2()",
+          "description": "This method is a test method in the MockTests class. It is used to test the functionality of the CustomerController class. Without the body of the method, it's impossible to provide a detailed description of what the method tests.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testInventory",
+          "signature": "void testInventory()",
+          "description": "This method is a unit test for the Inventory functionality in the application. It likely tests various aspects of the Inventory, such as creation, deletion, and modification. The Test annotation indicates that this method is part of the application's test suite and is not part of the application's main functionality.",
+          "complexity": "MEDIUM"
+        },
+        {
+          "name": "testRental",
+          "signature": "void testRental()",
+          "description": "This method is a test method, used to test the functionality of the 'Rental' component of the system. It does not return any value and does not take any parameters. The complexity of the method would depend on the actual implementation, but test methods are typically of low to medium complexity.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "testCategoryByTimeStamp",
+          "signature": "void testCategoryByTimeStamp()",
+          "description": "This method is a test method in the MockTests class. It is likely testing the functionality related to categories by timestamp in the application. However, without the method body, it's impossible to provide a detailed description of what the method does.",
+          "complexity": "UNKNOWN"
+        }
+      ]
+    },
+    {
+      "name": "SakilaProjectApplicationTests",
+      "description": "",
+      "methods": [
+        {
+          "name": "MainController1",
+          "signature": "void MainController1()",
+          "description": "This method is a test method in the SakilaProjectApplicationTests class. As there is no body provided, it's impossible to determine its exact functionality. However, given its annotation, it's likely used for testing some functionality within the MainController class.",
+          "complexity": "UNKNOWN"
+        },
+        {
+          "name": "MainController2",
+          "signature": "void MainController2()",
+          "description": "Unable to determine without method body",
+          "complexity": "Unable to determine without method body"
+        },
+        {
+          "name": "MainController3",
+          "signature": "void MainController3()",
+          "description": "Unable to determine without method body",
+          "complexity": "Unable to determine without method body"
+        }
+      ]
+    },
+    {
+      "name": "SakilaProjectApplication",
+      "description": "",
+      "methods": [
+        {
+          "name": "main",
+          "signature": "void main(String args)",
+          "description": "Entry point for the MavenWrapperDownloader application. The method takes a single parameter, a String array named args, which is typically used to pass command-line arguments to the application.",
+          "complexity": "UNKNOWN"
+        }
+      ]
+    },
+    {
+      "name": "WebSecurityConfig",
+      "description": "",
+      "methods": [
+        {
+          "name": "configure",
+          "signature": "void configure(HttpSecurity http)",
+          "purpose": "This method is used to configure HTTP security settings for a web application. It could include settings for things like CORS, CSRF, session management, security headers, etc.",
+          "complexity": "MEDIUM",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "userDetailsService",
+          "signature": "UserDetailsService userDetailsService()",
+          "purpose": "This method is likely used to provide an instance of UserDetailsService, which is typically used in Spring Security to load user-specific data. However, without the method body, it's impossible to provide a detailed description.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "passwordEncoder",
+          "signature": "PasswordEncoder passwordEncoder()",
+          "purpose": "This method is likely used to provide an instance of a PasswordEncoder, which is typically used in web security to encode passwords. However, without the method body, a definitive description cannot be provided.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "authenticationProvider",
+          "signature": "DaoAuthenticationProvider authenticationProvider()",
+          "purpose": "This method is a Spring Bean producer that returns an instance of DaoAuthenticationProvider. The DaoAuthenticationProvider is used by Spring Security for authentication purposes, typically retrieving user details from a database.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "configure",
+          "signature": "void configure(HttpSecurity http)",
+          "description": "This method is used to configure HTTP security settings for a web application. It could include settings for things like CORS, CSRF, session management, security headers, etc.",
+          "complexity": "MEDIUM",
+          "purpose": "This method is used to configure HTTP security settings for a web application. It could include settings for things like CORS, CSRF, session management, security headers, etc."
+        }
+      ]
+    },
+    {
+      "name": "SuccessHandler",
+      "description": "",
+      "methods": [
+        {
+          "name": "onAuthenticationSuccess",
+          "signature": "void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)",
+          "purpose": "This method is triggered when a user successfully authenticates. It handles the post-authentication process. The actual operations performed by this method are unknown without the method body.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "MvcConfig",
+      "description": "",
+      "methods": [
+        {
+          "name": "addViewControllers",
+          "signature": "void addViewControllers(ViewControllerRegistry registry)",
+          "purpose": "This method is likely used to add view controllers to the ViewControllerRegistry. The ViewControllerRegistry is a class in Spring MVC that helps in registering view controllers. View controllers are used to render views to the user. The method does not return anything as indicated by the 'void' return type. The complexity and usage of this method would depend on the implementation, which is not provided.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "UserDetailsServiceImpl",
+      "description": "",
+      "methods": [
+        {
+          "name": "loadUserByUsername",
+          "signature": "UserDetails loadUserByUsername(String anyUsername)",
+          "purpose": "This method is likely used to retrieve user details based on the provided username. It is typically used in user authentication or user management contexts. However, without the method body, a definitive description cannot be provided.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "FailureHandler",
+      "description": "",
+      "methods": [
+        {
+          "name": "handle",
+          "signature": "void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e)",
+          "purpose": "This method is likely used to handle situations where access to a resource is denied. It might be used to log the access attempt, notify the user of the denial, or perform some other action.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "CustomerRepository",
+      "description": "",
+      "methods": [
+        {
+          "name": "getCustomerByCredentials",
+          "signature": "Customer getCustomerByCredentials(String username, Integer password)",
+          "purpose": "This method is designed to retrieve a Customer object from the database using the provided username and password as credentials. It is part of the CustomerRepository class in the com.sparta.engineering72.sakilaproject.respositories package. The method uses a Query annotation, indicating that it likely uses a SQL query to retrieve the data. However, the method body is not provided, so the exact implementation details are unknown. The method is expected to return a Customer object, but the return type is void, which is a discrepancy that might be a mistake.",
+          "complexity": "MEDIUM",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getCustomerByUsername",
+          "signature": "Customer getCustomerByUsername(String username)",
+          "purpose": "This method is used to retrieve a customer's details from a database using the provided username. The method is annotated with 'Query', suggesting it executes a database query.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getCustomersByFirstName",
+          "signature": "List getCustomersByFirstName(String firstName)",
+          "purpose": "This method is part of the CustomerRepository class in the com.sparta.engineering72.sakilaproject.respositories package. The purpose of this method is to retrieve a list of customers from a database or data source based on the first name provided as a parameter. The method uses a Query annotation, which suggests it is likely using Spring Data JPA or a similar framework to perform the database operation. However, the return type is mentioned as void which seems to be a mistake as the signature suggests it should return a List. The complexity of this method is low as it only involves a single database operation and does not involve any complex business logic or computations.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getCustomersByLastName",
+          "signature": "List getCustomersByLastName(String lastName)",
+          "purpose": "This method is used to retrieve a list of customers from the database that match the provided last name.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getCustomersByFullName",
+          "signature": "List getCustomersByFullName(String firstName, String lastName)",
+          "purpose": "This method is used to retrieve a list of customers from a database or a similar data source that matches the provided first name and last name.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getCustomerByCustomerId",
+          "signature": "Customer getCustomerByCustomerId(Integer id)",
+          "purpose": "This method is part of the CustomerRepository class in the com.sparta.engineering72.sakilaproject.respositories package. It is designed to retrieve a Customer object from the repository based on the provided customer ID. The method takes an Integer as a parameter, which represents the customer's ID. It returns a Customer object that matches the given ID. If no matching customer is found, the behavior would depend on the implementation, but typically it would return null or throw an exception.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getCustomerByEmail",
+          "signature": "Customer getCustomerByEmail(String email)",
+          "purpose": "This method retrieves a customer's details from the repository using their email address.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getCustomerCount",
+          "signature": "Integer getCustomerCount()",
+          "purpose": "This method is used to count the total number of customers in the database and return this count as an Integer.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "RentalRepository",
+      "description": "",
+      "methods": [
+        {
+          "name": "getRentalByRentalId",
+          "signature": "Rental getRentalByRentalId(Integer id)",
+          "purpose": "This method fetches a rental record from a data source based on the provided rental id.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getRentalByCustomerId",
+          "signature": "List getRentalByCustomerId(Integer customerId)",
+          "purpose": "This method is used to fetch a list of rentals associated with a specific customer ID from the database.",
+          "complexity": "MEDIUM",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "StaffRepository",
+      "description": "",
+      "methods": [
+        {
+          "name": "getStaffByUsername",
+          "signature": "Staff getStaffByUsername(String username)",
+          "purpose": "This method is used to retrieve a Staff object from the database that matches the provided username. There is a discrepancy in the provided details as the return type is mentioned as void which contradicts the method signature.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "ActorRepository",
+      "description": "",
+      "methods": [
+        {
+          "name": "findActorsByFirstNameAndLastName",
+          "signature": "List findActorsByFirstNameAndLastName(String firstName, String lastName)",
+          "purpose": "This method is designed to find and return a list of actors from a repository based on the provided first name and last name. It takes two parameters, both of which are strings representing the first name and the last name of the actors to be searched. The method is part of the ActorRepository class in the com.sparta.engineering72.sakilaproject.respositories package. However, the return type is mentioned as void which seems to be a mistake as the signature suggests it should return a List.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "findActorsByFirstName",
+          "signature": "List findActorsByFirstName(String firstName)",
+          "purpose": "This method is likely used to retrieve a list of actors from a repository by their first name. The method takes a String parameter 'firstName' and returns a List. However, the return type is mentioned as 'void' which contradicts the signature. This needs to be clarified.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "findActorsByLastName",
+          "signature": "List findActorsByLastName(String lastName)",
+          "purpose": "This method is likely to retrieve a list of actors whose last name matches the input string 'lastName'.",
+          "complexity": "UNKNOWN due to missing method body. Typically, such methods have LOW to MEDIUM complexity.",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getActorByActorId",
+          "signature": "Actor getActorByActorId(Integer id)",
+          "purpose": "This method is used to retrieve an Actor object from the repository using the actor's ID as a parameter. The return type should be an Actor, not void as mentioned in the details.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "FilmRepository",
+      "description": "",
+      "methods": [
+        {
+          "name": "getAvailableFilmCount",
+          "signature": "Integer getAvailableFilmCount(Integer id)",
+          "purpose": "This method is likely used to retrieve the count of available films, possibly filtered by a specific category, genre, or store based on the provided id. It appears to perform a database query to retrieve this count.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getAvailableFilms",
+          "signature": "List getAvailableFilms()",
+          "purpose": "This method is likely to retrieve a list of available films from the database. The exact functionality cannot be determined without the method body. The method is annotated with @Query, which indicates that it executes a custom SQL query.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getAllFilmsByCategory",
+          "signature": "List getAllFilmsByCategory(Integer categoryId)",
+          "purpose": "This method is designed to retrieve all films from the database that belong to a specific category, identified by the categoryId parameter. The method is part of the FilmRepository class in the com.sparta.engineering72.sakilaproject.respositories package. It is annotated with @Query, indicating that it executes a database query. However, the actual query is not provided in the method body. The method is supposed to return a List of films, but the return type is incorrectly specified as void.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getAllFilmsByActor",
+          "signature": "List getAllFilmsByActor(Integer actorId)",
+          "purpose": "This method is part of the FilmRepository class in the com.sparta.engineering72.sakilaproject.respositories package. The method is designed to retrieve all films associated with a specific actor, identified by their actorId. The method takes an Integer parameter, actorId, and returns a List of films. The method uses the @Query annotation, indicating that it executes a database query to fetch the data. However, the actual query is not provided in the details. The return type mentioned as 'void' seems to be a mistake as the signature indicates a List return type.",
+          "complexity": "MEDIUM",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "findByTitle",
+          "signature": "List findByTitle(String title)",
+          "purpose": "This method is used to find and return a list of films from the repository that match the given title.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getFilmByFilmId",
+          "signature": "Film getFilmByFilmId(Integer id)",
+          "purpose": "This method is used to retrieve a Film object from the repository using the film's ID as an argument. The method is expected to return a Film object. However, there is a discrepancy in the provided details as the return type is mentioned as void.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "CategoryRepository",
+      "description": "",
+      "methods": [
+        {
+          "name": "getCategoryByCategoryId",
+          "signature": "Category getCategoryByCategoryId(Integer id)",
+          "purpose": "This method is part of the CategoryRepository class in the com.sparta.engineering72.sakilaproject.respositories package. It is designed to retrieve a Category object from the repository based on the provided Category ID. The method takes an Integer id as a parameter, which represents the ID of the Category to be retrieved. The method returns a Category object that matches the provided ID.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "InventoryRepository",
+      "description": "",
+      "methods": [
+        {
+          "name": "getInventoriesByInventoryId",
+          "signature": "Inventory getInventoriesByInventoryId(Integer inventoryId)",
+          "purpose": "This method is designed to retrieve inventory details from the database based on the provided inventoryId. It is part of the InventoryRepository class in the com.sparta.engineering72.sakilaproject.respositories package. The method takes an Integer as a parameter, which is the inventoryId of the inventory item to be retrieved. The method returns an Inventory object that contains the details of the inventory item. The @Query annotation indicates that this method is used to perform a query operation on the database.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "deleteInventoryByInventoryId",
+          "signature": "void deleteInventoryByInventoryId(Integer id)",
+          "purpose": "This method is part of the InventoryRepository class in the com.sparta.engineering72.sakilaproject.respositories package. The purpose of this method is to delete an inventory item from the repository based on the provided inventory id. The method does not return any value. It takes an Integer id as a parameter, which is the id of the inventory item to be deleted. The method is annotated with 'Modifying' and 'Query', indicating that it modifies the database and involves a database query operation.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getInventoryCount",
+          "signature": "Integer getInventoryCount()",
+          "purpose": "This method is likely to interact with a database to fetch the count of inventory items.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "StaffController",
+      "description": "",
+      "methods": [
+        {
+          "name": "currentUser",
+          "signature": "String currentUser(ModelMap modelMap, HttpServletRequest request)",
+          "purpose": "This method is likely used to retrieve the current user's information from the request and add it to the model map, which can then be used to display the user's information in the view.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "CustomerController",
+      "description": "",
+      "methods": [
+        {
+          "name": "currentUser",
+          "signature": "String currentUser(ModelMap modelMap, HttpServletRequest request)",
+          "description": "This method is likely used to retrieve the current user's information from the request and add it to the model map, which can then be used to display the user's information in the view.",
+          "complexity": "LOW",
+          "purpose": "This method is likely used to retrieve the current user's information from the request and add it to the model map, which can then be used to display the user's information in the view."
+        },
+        {
+          "name": "getCustomers",
+          "signature": "String getCustomers(ModelMap modelMap, String firstNameFilter, String lastNameFilter)",
+          "purpose": "The 'getCustomers' method is part of the 'CustomerController' class in the 'com.sparta.engineering72.sakilaproject.controller' package. This method is designed to fetch customer data based on the provided first name and last name filters. The fetched data is then added to the ModelMap object which is used to pass this data to the view layer for rendering. The method is annotated with 'GetMapping' which indicates that it handles HTTP GET requests. The return type is mentioned as 'void' but the signature suggests it returns a String, which could be a JSON response or a view name.",
+          "complexity": "MEDIUM",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "showUsersRentalHistory",
+          "signature": "String showUsersRentalHistory(ModelMap modelMap, int id)",
+          "purpose": "This method is part of the CustomerController class in the com.sparta.engineering72.sakilaproject.controller package. The method is designed to fetch and display the rental history of a user in the application. It takes two parameters: a ModelMap object and an integer id. The ModelMap object is used to bind the data that will be returned to the view, while the integer id is used to identify the specific user whose rental history is to be fetched. The method returns a String which likely represents the view name to be rendered. The GetMapping annotation indicates that this method handles HTTP GET requests.",
+          "complexity": "MEDIUM",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "ActorController",
+      "description": "",
+      "methods": [
+        {
+          "name": "getActors",
+          "signature": "String getActors(ModelMap modelMap, String firstNameFilter, String lastNameFilter)",
+          "purpose": "The 'getActors' method is part of the ActorController class in the 'com.sparta.engineering72.sakilaproject.controller' package. It is designed to filter and retrieve actors based on the provided first name and last name filters. The method uses a ModelMap object to bind the results to a view, which is typically used in a Spring MVC framework for passing data to the view layer. The method is annotated with 'GetMapping', which indicates that it handles HTTP GET requests. However, the method body is not provided, so the exact implementation details are unknown. The return type is mentioned as 'void' which contradicts the method signature that suggests a String return type.",
+          "complexity": "MEDIUM",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getActorFilmDetails",
+          "signature": "String getActorFilmDetails(ModelMap modelMap, Integer id)",
+          "purpose": "The method is likely used to retrieve the film details for a specific actor, identified by the provided id, and add them to the model map.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "findActorById",
+          "signature": "Actor findActorById(Integer id)",
+          "purpose": "This method is used to retrieve an Actor object based on the provided id. It is a part of the ActorController class in the com.sparta.engineering72.sakilaproject.controller package. The method takes an Integer parameter and returns an Actor object.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getActorFullNameFromID",
+          "signature": "String getActorFullNameFromID(Integer id)",
+          "purpose": "This method is likely used to retrieve the full name of an actor from a database or data structure, using the actor's ID as a parameter. The method returns a String, which is presumably the actor's full name. However, without the method body, it's impossible to provide a detailed description of what the method does.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "MainController",
+      "description": "",
+      "methods": [
+        {
+          "name": "home",
+          "signature": "String home()",
+          "purpose": "Handles requests to the home page of a web application and returns a String that represents the view name to be rendered.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "login",
+          "signature": "String login()",
+          "purpose": "Handles user login requests and returns a response in String format. There is a discrepancy in the return type as per the provided details.",
+          "complexity": "MEDIUM",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "account",
+          "signature": "String account()",
+          "purpose": "Handles a specific type of web request and returns a response. The exact functionality cannot be determined without the method body.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "CategoryController",
+      "description": "",
+      "methods": [
+        {
+          "name": "getCategories",
+          "signature": "String getCategories(ModelMap modelMap)",
+          "purpose": "This method is likely used to fetch a list of categories, add them to the model, and return the name of the view that displays these categories.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getCategoryDetails",
+          "signature": "String getCategoryDetails(ModelMap modelMap, Integer id)",
+          "purpose": "The getCategoryDetails method is a part of the CategoryController class in the com.sparta.engineering72.sakilaproject.controller package. It is designed to fetch and return the details of a specific category based on the provided id. The method takes two parameters: a ModelMap object and an Integer id. The ModelMap object is a type of Map that is primarily used to bind model data to a view in Spring MVC, a framework for building web applications in Java. The Integer id is used to specify the category whose details are to be fetched. The method is annotated with GetMapping, which indicates that it handles HTTP GET requests. The return type of the method is String, which likely represents the view name to be returned after processing the request.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getCategoryById",
+          "signature": "Category getCategoryById(Integer id)",
+          "purpose": "This method retrieves a Category object based on the provided id. It is typically used in HTTP GET requests to fetch a specific category.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "FilmController",
+      "description": "",
+      "methods": [
+        {
+          "name": "getFilms",
+          "signature": "String getFilms(ModelMap modelMap, String filter)",
+          "purpose": "The 'getFilms' method is part of the 'FilmController' class in the 'com.sparta.engineering72.sakilaproject.controller' package. This method is designed to interact with the ModelMap object and a filter string. The ModelMap object is a type of map that is used to pass collections of objects from the controller tier to the view tier. The filter string is likely used to filter the data that is being passed to the view. The method is annotated with 'GetMapping', which is a composed annotation that acts as a shortcut for '@RequestMapping(method = RequestMethod.GET)'. This suggests that the method is used to handle GET requests in the application. However, without the method body, it's hard to provide a more detailed description of what the method does.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getFilmDetails",
+          "signature": "String getFilmDetails(ModelMap modelMap, Integer id)",
+          "purpose": "This method is part of the FilmController class in the com.sparta.engineering72.sakilaproject.controller package. The method is designed to fetch and return the details of a film from a database or data source, based on the provided id. The details are then added to the ModelMap object, which is used to pass attributes back to the client-side view. The method is annotated with GetMapping, indicating that it handles HTTP GET requests. The return type is void, which means it does not return any value. However, the signature suggests that it should return a String, which might be a mistake or inconsistency. The method takes two parameters: a ModelMap object and an Integer id.",
+          "complexity": "MEDIUM",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "rentFilm",
+          "signature": "String rentFilm(ModelMap modelMap, Principal principal, int filmid)",
+          "purpose": "Handles the process of a user renting a film. The ModelMap might be used to store information about the rental process, which can then be displayed to the user.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getFilmDetails",
+          "signature": "String getFilmDetails(ModelMap modelMap, Integer id)",
+          "description": "This method is part of the FilmController class in the com.sparta.engineering72.sakilaproject.controller package. The method is designed to fetch and return the details of a film from a database or data source, based on the provided id. The details are then added to the ModelMap object, which is used to pass attributes back to the client-side view. The method is annotated with GetMapping, indicating that it handles HTTP GET requests. The return type is void, which means it does not return any value. However, the signature suggests that it should return a String, which might be a mistake or inconsistency. The method takes two parameters: a ModelMap object and an Integer id.",
+          "complexity": "MEDIUM",
+          "purpose": "This method is part of the FilmController class in the com.sparta.engineering72.sakilaproject.controller package. The method is designed to fetch and return the details of a film from a database or data source, based on the provided id. The details are then added to the ModelMap object, which is used to pass attributes back to the client-side view. The method is annotated with GetMapping, indicating that it handles HTTP GET requests. The return type is void, which means it does not return any value. However, the signature suggests that it should return a String, which might be a mistake or inconsistency. The method takes two parameters: a ModelMap object and an Integer id."
+        },
+        {
+          "name": "showEditProductPage",
+          "signature": "ModelAndView showEditProductPage(int id)",
+          "purpose": "This method is likely used to handle a request to show an edit page for a specific product in a web application. The product is probably identified by the integer 'id' passed as a parameter. The method returns a ModelAndView object, which is typically used in Spring MVC applications to model and view data. The RequestMapping annotation suggests that this method is mapped to a specific URL pattern for handling HTTP requests. However, without the method body, it's impossible to provide a detailed description of what the method does.",
+          "complexity": "UNKNOWN",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "StaffService",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "RentalService",
+      "description": "",
+      "methods": [
+        {
+          "name": "getRentalsByCustomer",
+          "signature": "List getRentalsByCustomer(Integer id)",
+          "purpose": "The method is likely to fetch all the rental records associated with a particular customer, identified by the provided id.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "addRental",
+          "signature": "void addRental(int inventoryId, int customerId, Timestamp returnDate)",
+          "purpose": "This method is likely used to add a new rental record into the system, which includes the inventory item being rented, the customer who is renting the item, and the expected return date.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "InventoryService",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "CustomerService",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "CategoryService",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "ActorService",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "FilmService",
+      "description": "",
+      "methods": [
+        {
+          "name": "getAllFilms",
+          "signature": "List getAllFilms()",
+          "purpose": "This method is likely designed to retrieve all film records from a database or other data source. It does not take any parameters, suggesting that it retrieves all records without any filtering or sorting. The return type is listed as 'void', which is contradictory to the method signature that suggests a List return type. This might be a mistake in the provided details. If the method indeed returns a List, it is likely a list of Film objects or similar data structure.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getFilmByID",
+          "signature": "Film getFilmByID(int id)",
+          "purpose": "This method retrieves a film record using the provided unique identifier 'id'. It returns a Film object containing the details of the film.",
+          "complexity": "LOW",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getFilmsByTitle",
+          "signature": "List getFilmsByTitle(String title)",
+          "purpose": "This method is part of the FilmService class in the com.sparta.engineering72.sakilaproject.services package. It is designed to retrieve a list of films from a database or data source based on the title provided as a parameter. The method returns a List of films that match the title string input. The list could contain objects of a Film class, each representing a film with properties such as title, director, release date, etc. However, without the method body, it's impossible to provide a detailed description of its functionality.",
+          "complexity": "MEDIUM",
+          "dependencies": [],
+          "usage": "",
+          "exceptions": []
+        },
+        {
+          "name": "getAvailableFilms",
+          "signature": "List getAvailableFilms()",
+          "description": "This method is likely to retrieve a list of available films from the database. The exact functionality cannot be determined without the method body. The method is annotated with @Query, which indicates that it executes a custom SQL query.",
+          "complexity": "UNKNOWN",
+          "purpose": "This method is likely to retrieve a list of available films from the database. The exact functionality cannot be determined without the method body. The method is annotated with @Query, which indicates that it executes a custom SQL query."
+        },
+        {
+          "name": "getAvailableFilmCount",
+          "signature": "Integer getAvailableFilmCount(Integer id)",
+          "description": "This method is likely used to retrieve the count of available films, possibly filtered by a specific category, genre, or store based on the provided id. It appears to perform a database query to retrieve this count.",
+          "complexity": "LOW",
+          "purpose": "This method is likely used to retrieve the count of available films, possibly filtered by a specific category, genre, or store based on the provided id. It appears to perform a database query to retrieve this count."
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "Film",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "Customer",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "Inventory",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "FilmActorPK",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "Category",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "FilmCategoryPK",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "FilmActor",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "FilmCategory",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "Actor",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "Staff",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "Rental",
+      "description": "Failed to extract description",
+      "methods": []
+    },
+    {
+      "name": "FilmText",
+      "description": "Failed to extract description",
       "methods": []
     }
-  ]
+  ],
+  "project_purpose": "This project involves the development of a website dedicated to movies. The website will likely provide information about various movies, possibly including details like cast, crew, plot summaries, ratings, and reviews. The exact features and functionalities will depend on the specific requirements of the project."
 }
