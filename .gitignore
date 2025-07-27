@@ -1,0 +1,4 @@
+.pytest*
+.env
+__pycache__
+*SakilaProject*

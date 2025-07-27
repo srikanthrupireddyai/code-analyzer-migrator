@@ -1,0 +1,105 @@
+{
+  "name": "sakilaproject",
+  "description": "Creating a movie website.",
+  "groupId": "com.sparta.engineering72",
+  "artifactId": "sakilaproject",
+  "version": "0.0.1-SNAPSHOT",
+  "dependencies": [
+    {
+      "groupId": "org.springframework.boot",
+      "artifactId": "spring-boot-starter-actuator",
+      "version": null,
+      "scope": null
+    },
+    {
+      "groupId": "org.springframework.boot",
+      "artifactId": "spring-boot-starter-tomcat",
+      "version": null,
+      "scope": "provided"
+    },
+    {
+      "groupId": "org.springframework.boot",
+      "artifactId": "spring-boot-starter-thymeleaf",
+      "version": null,
+      "scope": null
+    },
+    {
+      "groupId": "org.springframework.boot",
+      "artifactId": "spring-boot-starter-web",
+      "version": null,
+      "scope": null
+    },
+    {
+      "groupId": "org.springframework.boot",
+      "artifactId": "spring-boot-devtools",
+      "version": null,
+      "scope": "runtime"
+    },
+    {
+      "groupId": "mysql",
+      "artifactId": "mysql-connector-java",
+      "version": null,
+      "scope": "runtime"
+    },
+    {
+      "groupId": "org.springframework.boot",
+      "artifactId": "spring-boot-starter-data-jpa",
+      "version": null,
+      "scope": null
+    },
+    {
+      "groupId": "org.springframework.boot",
+      "artifactId": "spring-boot-starter-test",
+      "version": null,
+      "scope": "test"
+    },
+    {
+      "groupId": "org.webjars",
+      "artifactId": "bootstrap",
+      "version": "4.5.2",
+      "scope": null
+    },
+    {
+      "groupId": "org.webjars",
+      "artifactId": "font-awesome",
+      "version": "4.6.3",
+      "scope": null
+    },
+    {
+      "groupId": "nz.net.ultraq.thymeleaf",
+      "artifactId": "thymeleaf-layout-dialect",
+      "version": null,
+      "scope": null
+    },
+    {
+      "groupId": "org.springframework.boot",
+      "artifactId": "spring-boot-starter-security",
+      "version": null,
+      "scope": null
+    },
+    {
+      "groupId": "org.springframework.security",
+      "artifactId": "spring-security-test",
+      "version": null,
+      "scope": "test"
+    },
+    {
+      "groupId": "org.thymeleaf.extras",
+      "artifactId": "thymeleaf-extras-springsecurity3",
+      "version": "3.0.2.RELEASE",
+      "scope": null
+    },
+    {
+      "groupId": "junit",
+      "artifactId": "junit",
+      "version": "4.13",
+      "scope": "test"
+    },
+    {
+      "groupId": "org.mockito",
+      "artifactId": "mockito-junit-jupiter",
+      "version": "2.28.2",
+      "scope": "test"
+    }
+  ]
+}
